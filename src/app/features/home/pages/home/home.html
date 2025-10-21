@@ -1,0 +1,13 @@
+<section class="home-container">
+  @if (loading()) {
+    <div class="loading">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      <p>Cargando datos del usuario...</p>
+    </div>
+  } @else {
+    <app-user-card
+      [user]="user() ?? undefined"
+      (refresh)="reloadUser()"
+    ></app-user-card>
+  }
+</section>

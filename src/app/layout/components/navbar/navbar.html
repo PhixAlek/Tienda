@@ -1,0 +1,18 @@
+<mat-toolbar color="primary" class="navbar">
+  <span class="brand">FinBit Dashboard</span>
+
+  <span class="spacer"></span>
+
+  <button mat-button routerLink="/home">Inicio</button>
+  <button mat-button routerLink="/productos">Productos</button>
+
+  @if (user()) {
+    <span class="user">👤 {{ user()?.name }}</span>
+    <span class="reloads">Recargas: {{ reloads() }}</span>
+    <button mat-button color="accent" (click)="logout()">Cerrar sesión</button>
+  } @else {
+    <button mat-stroked-button color="accent" (click)="goToLogin()">
+      Iniciar sesión
+    </button>
+  }
+</mat-toolbar>
