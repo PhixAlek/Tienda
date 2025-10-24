@@ -1,0 +1,47 @@
+<div class="register-container">
+  @if (step === 'choose') {
+    <h1>¿Qué tipo de cuenta vas a crear?</h1>
+    <div class="choose">
+      <button (click)="select('user')">Usuario</button>
+      <button (click)="select('admin')">Empresa / Admin</button>
+    </div>
+  } @else if (step === 'user') {
+    <h1>Registro de Usuario</h1>
+    <form (ngSubmit)="submitUser()" #fUser="ngForm">
+      <div class="form-group">
+        <label>Nombre</label>
+        <input name="name" [(ngModel)]="name" required>
+      </div>
+      <div class="form-group">
+        <label>Correo</label>
+        <input name="email" type="email" [(ngModel)]="email" required>
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input name="password" type="password" [(ngModel)]="password" required>
+      </div>
+      <button type="submit" [disabled]="fUser.invalid">Crear cuenta</button>
+    </form>
+  } @else {
+    <h1>Registro de Empresa</h1>
+    <form (ngSubmit)="submitAdmin()" #fAdmin="ngForm">
+      <div class="form-group">
+        <label>Nombre de empresa</label>
+        <input name="companyName" [(ngModel)]="companyName" required>
+      </div>
+      <div class="form-group">
+        <label>NIT</label>
+        <input name="nit" [(ngModel)]="nit" required>
+      </div>
+      <div class="form-group">
+        <label>Correo</label>
+        <input name="email" type="email" [(ngModel)]="email" required>
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input name="password" type="password" [(ngModel)]="password" required>
+      </div>
+      <button type="submit" [disabled]="fAdmin.invalid">Crear empresa</button>
+    </form>
+  }
+</div>

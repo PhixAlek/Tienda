@@ -6,10 +6,12 @@ import { Layout } from './layout/layout/layout';
 import { authGuard } from './guards/auth-guard';
 import { adminGuard } from './guards/admin-guard';
 import { guestOnlyGuard } from './guards/guest-only-guard';
+import { Register } from './features/auth/pages/register/register';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: Login, canActivate: [guestOnlyGuard]},
+  { path: 'register', component: Register, canActivate: [guestOnlyGuard]},
   {
     path: '',
     component: Layout,
