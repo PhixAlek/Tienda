@@ -26,11 +26,19 @@ export class Login {
   onSubmit() {
     if (!this.email || !this.password) return alert('Completa email y contraseña.');
     this.loading = true;
-    const ok = this.authService.login(this.email, this.password);
-    setTimeout(() => {
-      this.loading = false;
-      ok ? this.router.navigate(['/home']) : alert('Credenciales inválidas.');
-    }, 1200);
+    const ok = this.authService.loginHttp({email: this.email, password: this.password})
+     .subscribe({
+        next: ({ token }) => {
+          this.authService.applyToken(token);    // setea signals + storage
+          this.loading = false;
+          this.router.navigate(['/home']);
+        },
+        error: (err) => {
+          this.loading = false;
+          alert(err?.error?.error || 'Credenciales inválidas');
+        }
+      });
+
   }
 
 }

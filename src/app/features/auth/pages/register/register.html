@@ -7,10 +7,10 @@
     </div>
   } @else if (step === 'user') {
     <h1>Registro de Usuario</h1>
-    <form (ngSubmit)="submitUser()" #fUser="ngForm">
+    <form (ngSubmit)="submit()" #fUser="ngForm">
       <div class="form-group">
         <label>Nombre</label>
-        <input name="name" [(ngModel)]="name" required>
+        <input name="name" [(ngModel)]="nombre" required>
       </div>
       <div class="form-group">
         <label>Correo</label>
@@ -24,7 +24,7 @@
     </form>
   } @else {
     <h1>Registro de Empresa</h1>
-    <form (ngSubmit)="submitAdmin()" #fAdmin="ngForm">
+    <!-- <form (ngSubmit)="submitAdmin()" #fAdmin="ngForm">
       <div class="form-group">
         <label>Nombre de empresa</label>
         <input name="companyName" [(ngModel)]="companyName" required>
@@ -42,6 +42,6 @@
         <input name="password" type="password" [(ngModel)]="password" required>
       </div>
       <button type="submit" [disabled]="fAdmin.invalid">Crear empresa</button>
-    </form>
+    </form> -->
   }
 </div>

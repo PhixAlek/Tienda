@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
 
+type Role = 'admin' | 'staff' | 'user';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -15,31 +16,40 @@ export class Register {
   step: 'choose' | 'user' | 'admin' = 'choose';
 
   // user
-  name = '';
+  nombre = '';
   email = '';
   password = '';
+
 
   // admin
   companyName = '';
   nit = '';
 
+  role: Role = 'user';
   loading = false;
 
   constructor(private auth: AuthService, private router: Router) {}
 
-  select(type: 'user' | 'admin') { this.step = type; }
-
-  submitUser() {
-    if (!this.name || !this.email || !this.password) return alert('Completa todos los campos.');
-    this.loading = true;
-    const ok = this.auth.register({ name: this.name, email: this.email, password: this.password, type: 'user' });
-    setTimeout(() => { this.loading = false; ok ? this.router.navigate(['/home']) : alert('Error al registrar'); }, 1000);
+  select(type: 'user' | 'admin') {
+    this.step = type;
+    this.role = type === 'admin' ? 'admin' : 'user';
   }
 
-  submitAdmin() {
-    if (!this.companyName || !this.email || !this.password || !this.nit) return alert('Completa todos los campos de empresa.');
+  submit() {
+    if (!this.nombre || !this.email || !this.password) return alert('Completa todos los campos.');
     this.loading = true;
-    const ok = this.auth.register({ name: this.companyName, email: this.email, password: this.password, type: 'admin' });
-    setTimeout(() => { this.loading = false; ok ? this.router.navigate(['/home']) : alert('Error al registrar'); }, 1000);
+
+    this.auth.registerHttp({ nombre: this.nombre, email: this.email, password: this.password, role: this.role })
+      .subscribe({
+        next: ({ token }) => {
+          this.auth.applyToken(token);   // se queda logueado tras registrar
+          this.loading = false;
+          this.router.navigate(['/home']);
+        },
+        error: (err) => {
+          this.loading = false;
+          alert(err?.error?.error || 'Error al registrar');
+        }
+      });
   }
 }

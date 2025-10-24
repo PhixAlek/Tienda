@@ -1,6 +1,11 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, signal, computed, inject } from '@angular/core';
 
-type Role = 'admin' | 'user';
+type Role = 'admin' | 'user' | 'staff';
+
+interface LoginDto { email: string; password: string; }
+interface RegisterDto { nombre: string; email: string; password: string; role?: Role; }
+interface TokenResponse { token: string; }
 
 @Injectable({
   providedIn: 'root'
@@ -23,17 +28,8 @@ export class AuthService {
   role = computed(() => this._role());
   exp  = computed(() => this._exp());
 
-  //   constructor() {
-  //   const token = localStorage.getItem(this.KEY_TOKEN);
-  //   const role = localStorage.getItem(this.KEY_ROLE) as Role | null;
-
-  //   if (token) {
-  //     this._user.set({ name: 'Usuario', email: 'user@finbit.dev' });
-  //     if (role === 'admin' || role === 'user') this._role.set(role);
-  //   }
-  // }
-
-  // Carga de usuario simulado
+  private http = inject(HttpClient);
+  private API = 'http://localhost:3000';
 
   loadUser() {
     this.loading.set(true);
@@ -43,62 +39,47 @@ export class AuthService {
     }, 1500);
   }
 
+ // ---------------------------
+  // Sesión: set desde un token
+  // ---------------------------
+  private setSessionFromToken(token: string) {
+    // 1) Persistimos para interceptor/guards
+    localStorage.setItem(this.KEY_TOKEN, token);
 
-
-  // ---- Generación de un JWT simulado (solo para clase) ----
-  private makeFakeJWT(payload: object): string {
-    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-    const body   = btoa(JSON.stringify(payload));
-    const sign   = btoa('FinBitFakeSignature'); // solo decorativo
-    return `${header}.${body}.${sign}`;
-  }
-
-  // ---- Decodificador robusto (payload → objeto) ----
-  private readPayload(token: string): any | null {
+    // 2) Decodificamos payload para extraer datos
+    //    token = header.payload.signature
     try {
-      const parts = token.split('.');
-      if (parts.length !== 3) return null;
-      const text = atob(parts[1]);
-      return JSON.parse(text);
+      const payload = token.split('.')[1];             // toma la 2da parte del JWT
+      const decoded = JSON.parse(atob(payload));       // Base64 → JSON
+      // decoded = { id, email, role, iat, exp }
+
+      // 3) Role legacy (si otros lugares lo usan)
+      if (decoded?.role) localStorage.setItem(this.KEY_ROLE, decoded.role);
+
+      // 4) Signals de app
+      const name = decoded?.email ? decoded.email.split('@')[0] : 'Usuario';
+      this._user.set({ name, email: decoded?.email || '' });
+      this._role.set(decoded?.role ?? null);
+      this._exp.set(typeof decoded?.exp === 'number' ? decoded.exp : null);
     } catch {
-      return null;
+      // Si está corrupto, se borra y queda sin sesión
+      this.logout();
     }
   }
 
-  // ---- Login simulado con rol según email ----
-  login(email: string, password: string): boolean {
-    if (!email || !password) return false;
-
-  const asAdmin = /admin/i.test(email);//Es como un detector que revisa el correo del usuario y dice: “Si veo la palabra admin en el correo, lo trataré como administrador”.
-
-    const role: Role = asAdmin ? 'admin' : 'user';
-
-    const exp = Math.floor(Date.now() / 1000) + 60 * 30; // expira en 30 min
-
-    const token = this.makeFakeJWT({ name: email.split('@')[0], email, role, exp });
-
-    // Persistimos para guards/interceptor
-    localStorage.setItem(this.KEY_TOKEN, token);
-    localStorage.setItem(this.KEY_ROLE, role);
-
-    // Refrescamos signals
-    this._user.set({ name: email.split('@')[0], email });
-    this._role.set(role);
-    this._exp.set(exp);
-    return true;
+  // ---------------------------
+  // Login real (POST /auth/login)
+  // ---------------------------
+  loginHttp(dto: LoginDto) {
+    // Devolvemos el observable para suscribirse desde el componente
+    return this.http.post<TokenResponse>(`${this.API}/auth/login`, dto);
   }
 
-  // ---- Register simulado: emula alta y deja logueado ----
-  register(data: { name: string; email: string; password: string; type: Role }): boolean {
-    if (!data.name || !data.email || !data.password) return false;
-    const exp = Math.floor(Date.now() / 1000) + 60 * 30;
-    const token = this.makeFakeJWT({ name: data.name, email: data.email, role: data.type, exp });
-    localStorage.setItem(this.KEY_TOKEN, token);
-    localStorage.setItem(this.KEY_ROLE, data.type);
-    this._user.set({ name: data.name, email: data.email });
-    this._role.set(data.type);
-    this._exp.set(exp);
-    return true;
+  // ------------------------------
+  // Register real (POST /auth/register)
+  // ------------------------------
+  registerHttp(dto: RegisterDto) {
+    return this.http.post<TokenResponse>(`${this.API}/auth/register`, dto);
   }
 
   // ---- Helpers de sesión ----
@@ -108,7 +89,12 @@ export class AuthService {
 
   getDecoded(): any | null {
     const t = this.getToken();
-    return t ? this.readPayload(t) : null;
+    if (!t) return null;
+    try {
+      return JSON.parse(atob(t.split('.')[1]));
+    } catch {
+      return null;
+    }
   }
 
  // Cierre de sesión
@@ -136,6 +122,11 @@ export class AuthService {
   isAdmin(): boolean {
     const d = this.getDecoded();
     return d?.role === 'admin';
+  }
+
+   // Expuesto para componentes: setea sesión tras recibir token desde login/register
+  applyToken(token: string) {
+    this.setSessionFromToken(token);
   }
 
 }
