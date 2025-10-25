@@ -11,3 +11,28 @@
     ></app-user-card>
   }
 </section>
+
+<!-- Carrusel movido hacia la parte inferior -->
+<section class="products-carousel">
+  <h2>Productos disponibles</h2>
+
+  @if (productsLoading()) {
+    <div class="loading">
+      <mat-progress-spinner diameter="40"></mat-progress-spinner>
+      <p>Cargando productos...</p>
+    </div>
+  } @else if (productsError()) {
+    <p class="error">{{ productsError() }}</p>
+  } @else {
+    <div class="carousel-wrapper">
+      <div class="carousel-track">
+        @for (p of products(); track p._id) {
+          <app-product-card [product]="p"></app-product-card>
+        }
+        @for (p of products(); track 'dup-' + p._id) {
+          <app-product-card [product]="p"></app-product-card>
+        }
+      </div>
+    </div>
+  }
+</section>

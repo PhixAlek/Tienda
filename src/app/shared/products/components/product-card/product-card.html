@@ -1,0 +1,10 @@
+<div class="product-card">
+  <div class="card-header">
+    <h3>{{ product().nombre }}</h3>
+    <span class="price">${{ product().precio | number: '1.0-0' }}</span>
+  </div>
+
+  <div class="card-body">
+    <p><strong>Stock:</strong> {{ product().stock }}</p>
+  </div>
+</div>

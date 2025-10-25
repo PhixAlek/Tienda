@@ -34,11 +34,11 @@ export class ProductService {
     this._error.set(null);
 
     this.http.get<Product[]>(this.API).subscribe({
-      next: (data) => {
+      next: (data:any) => {
         this._products.set(data);
         this._loading.set(false);
       },
-      error: (err) => {
+      error: (err:any) => {
         console.error('Error cargando productos:', err);
         this._error.set('No se pudieron obtener los productos.');
         this._loading.set(false);

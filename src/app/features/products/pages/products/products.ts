@@ -1,30 +1,51 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
 import { ProductService } from './../../services/product';
-interface ProductView {
-  id: number;
-  name: string;
-  price: number;
-}
+import { ProductList } from '../../components/product-list/product-list';
+import { ProductForm } from '../../components/product-form/product-form';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatButtonModule, ProductList, ProductForm],
   templateUrl: './products.html',
   styleUrls: ['./products.scss']
 })
-export class Products implements OnInit {
- private productSvc = inject(ProductService);
+export class Products {
+  private productSvc = inject(ProductService);
 
-  // signals derivadas del servicio
-  products = this.productSvc.products;
-  loading  = this.productSvc.loading;
-  error    = this.productSvc.error;
+  view = signal<'menu' | 'list' | 'form'>('menu');
+  editingProduct = signal<any | null>(null);
 
-  ngOnInit() {
-    // simplemente dispara la carga
+  // Vistas
+  goToMenu() {
+    this.view.set('menu');
+    this.editingProduct.set(null);
+  }
+
+  goToCreate() {
+    this.editingProduct.set(null);
+    this.view.set('form');
+  }
+
+  goToList() {
+    this.view.set('list');
+    this.editingProduct.set(null);
+  }
+
+  goToEdit(product: any) {
+    this.editingProduct.set(product);
+    this.view.set('form');
+  }
+
+  goBackToList() {
+    this.goToList();
+    this.productSvc.getAll();
+  }
+
+  onProductSaved() {
+    this.goToMenu();
     this.productSvc.getAll();
   }
 }

@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { AuthService } from '../../../features/auth/services/auth';
 
 @Component({
@@ -12,7 +13,6 @@ import { AuthService } from '../../../features/auth/services/auth';
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
-
 export class Navbar {
   private auth = inject(AuthService);
   private router = inject(Router);
@@ -20,6 +20,20 @@ export class Navbar {
   user = this.auth.user;
   reloads = this.auth.reloads;
   role = this.auth.role;
+
+  currentTitle = signal<string>('');
+
+  constructor() {
+  this.router.events
+    .pipe(filter(event => event instanceof NavigationEnd))
+    .subscribe((event: any) => {
+      const url = event.urlAfterRedirects;
+      console.log('Ruta actual:', url); // ← agrega esto
+      if (url.includes('/productos')) this.currentTitle.set('Gestión de productos');
+      else this.currentTitle.set('');
+      console.log('Título actual:', this.currentTitle());
+    });
+}
 
   logout() {
     this.auth.logout();

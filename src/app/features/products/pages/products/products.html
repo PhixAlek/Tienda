@@ -1,24 +1,28 @@
 <div class="products-container">
-  <h2>Productos disponibles</h2>
-
-  @if (loading()) {
-    <div class="loading-container">
-      <mat-spinner diameter="40"></mat-spinner>
-      <p>Cargando lista de productos...</p>
+  @if (view() === 'menu') {
+  <div class="menu-container">
+    <div class="options">
+      <button mat-flat-button color="primary" (click)="goToCreate()">
+        Crear nuevo producto
+      </button>
+      <button mat-flat-button color="primary" (click)="goToList()">
+        Editar / eliminar productos
+      </button>
     </div>
-  } @else if (error()) {
-    <p class="error">{{ error() }}</p>
-  } @else {
-    @for (item of products(); track item._id) {
-      <div class="product-card">
-        <h3>{{ item.nombre }}</h3>
-        <p>Precio: {{ item.precio | currency:'USD' }}</p>
-        <p>Stock: {{ item.stock }}</p>
-      </div>
-    } @empty {
-      <p>No hay productos para mostrar.</p>
-    }
+  </div>
+  } @else if (view() === 'list') {
+  <div class="list-container">
+    <app-product-list (cancel)="goToMenu()" (edit)="goToEdit($event)">
+    </app-product-list>
+  </div>
+  } @else if (view() === 'form') {
+  <div class="form-container">
+    <app-product-form
+      [product]="editingProduct()"
+      (cancel)="goToMenu()"
+      (saved)="onProductSaved()"
+    >
+    </app-product-form>
+  </div>
   }
 </div>
-
-

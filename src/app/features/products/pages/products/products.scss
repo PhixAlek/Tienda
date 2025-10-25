@@ -1,25 +1,99 @@
 .products-container {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
-}
-
-.product-card {
-  background: #f5f5f5;
-  border-radius: 8px;
-  padding: 1rem;
-  margin: 0.5rem 0;
   width: 100%;
-  max-width: 300px;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-height: 80vh;
+  background: #f5f8fa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0a192f;
+    text-align: center;
+    margin: 2rem 0;
+  }
+
+  /* === 1. MENÚ PRINCIPAL === */
+  .menu-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* centrado vertical */
+    align-items: center; /* centrado horizontal */
+    width: 100%;
+
+    .options {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+
+      button {
+        min-width: 260px;
+        height: 70px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 35px;
+        background-color: #1976d2;
+        color: #fff;
+        transition: all 0.25s ease;
+
+        &:hover {
+          background-color: #125ca1;
+          transform: scale(1.03);
+        }
+
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+    }
+  }
+
+  /* === 2. LISTA === */
+.list-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* anclada arriba */
+  width: 100%;
+  height: 100%;
+  padding-top: 1rem;
+  box-sizing: border-box;
+
+  app-product-list {
+    width: 90vw;            /* ocupa el 90% del viewport horizontal */
+    max-width: none;        /* sin límite fijo */
+    min-height: 75vh;       /* altura visible amplia */
+    display: block;
+  }
+
+  /* fuerza que la tabla interna use todo el ancho */
+  app-product-list table {
+    width: 100% !important;
+  }
+}
+
+
+  /* === 3. FORMULARIO === */
+  .form-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* centrado vertical */
+    width: 100%;
+
+    app-product-form {
+      width: 60%; /* ocupa 50–60 % del ancho visible */
+      max-width: 700px;
+      min-height: 60vh; /* ocupa parte importante del alto */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
 }

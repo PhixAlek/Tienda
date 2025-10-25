@@ -2,13 +2,72 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
+  min-height: 40vh;
+  padding: 2rem;
+  margin-bottom: 3rem;
 }
 
-.loading {
+.products-carousel {
+  position: relative;
+  width: 100%;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #555;
-  gap: 1rem;
+  text-align: center;
+  padding: 2rem 1rem 3rem; /* espacio inferior extra */
+  background: #f5f8fa;
+  min-height: 30vh; /* hace que quede abajo naturalmente */
+  margin-top: auto;
+
+  h2 {
+    color: #0a192f;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .carousel-wrapper {
+    width: 100%;
+    max-width: 1400px;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: 1rem;
+    animation: scroll 40s linear infinite;
+    will-change: transform;
+
+    &:hover {
+      animation-play-state: paused;
+    }
+
+    app-product-card {
+      flex: 0 0 280px;
+    }
+  }
+
+  @keyframes scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: #555;
+  }
+
+  .error {
+    color: #c00;
+    font-weight: 600;
+  }
 }

@@ -1,0 +1,52 @@
+<div class="product-list">
+
+  <button mat-button class="back-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon> Volver
+  </button>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+    <!-- Nombre -->
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef> Nombre </th>
+      <td mat-cell *matCellDef="let p">{{ p.nombre }}</td>
+    </ng-container>
+
+    <!-- Precio -->
+    <ng-container matColumnDef="precio">
+      <th mat-header-cell *matHeaderCellDef> Precio </th>
+      <td mat-cell *matCellDef="let p">{{ p.precio | currency:'USD' }}</td>
+    </ng-container>
+
+    <!-- Stock -->
+    <ng-container matColumnDef="stock">
+      <th mat-header-cell *matHeaderCellDef> Stock </th>
+      <td mat-cell *matCellDef="let p">{{ p.stock }}</td>
+    </ng-container>
+
+    <!-- Acciones -->
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef> Acciones </th>
+      <td mat-cell *matCellDef="let p">
+        <button mat-icon-button class="btn-edit" (click)="onEdit(p)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button class="btn-delete" (click)="onDelete(p)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Filas -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <!-- Paginador -->
+  <mat-paginator
+  [length]="dataSource.data.length"
+  [pageSize]="8"
+  [pageSizeOptions]="[5, 8, 12]"
+  aria-label="Selector de página de productos">
+</mat-paginator>
+
+</div>

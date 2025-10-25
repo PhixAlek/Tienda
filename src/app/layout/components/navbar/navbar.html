@@ -1,17 +1,20 @@
 <mat-toolbar color="primary" class="navbar">
   <span class="brand">FinBit Dashboard</span>
 
+  @if (currentTitle()) {
+    <span class="page-title">{{ currentTitle() }}</span>
+  }
+
   <span class="spacer"></span>
 
   <button mat-button routerLink="/home">Inicio</button>
+
   @if (role() === 'admin') {
-  <button mat-button routerLink="/productos">Productos</button>
+    <button mat-button routerLink="/productos">Editar productos</button>
   }
 
-
-
   @if (user()) {
-    <span class="user">👤 {{ user()?.name }}</span>
+    <span class="user">{{ user()?.name }}</span>
     <span class="reloads">Recargas: {{ reloads() }}</span>
     <button mat-button color="accent" (click)="logout()">Cerrar sesión</button>
   } @else {
