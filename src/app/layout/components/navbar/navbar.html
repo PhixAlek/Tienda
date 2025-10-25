@@ -4,7 +4,11 @@
   <span class="spacer"></span>
 
   <button mat-button routerLink="/home">Inicio</button>
+  @if (role() === 'admin') {
   <button mat-button routerLink="/productos">Productos</button>
+  }
+
+
 
   @if (user()) {
     <span class="user">👤 {{ user()?.name }}</span>

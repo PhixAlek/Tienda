@@ -2,7 +2,7 @@
   <div class="login-card">
     <h1>Iniciar sesión</h1>
 
-    @if (!loading) {
+    @if (!loading()) {
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
       <div class="form-group">
         <label for="email">Correo electrónico</label>

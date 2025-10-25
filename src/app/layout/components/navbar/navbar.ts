@@ -19,9 +19,11 @@ export class Navbar {
 
   user = this.auth.user;
   reloads = this.auth.reloads;
+  role = this.auth.role;
 
   logout() {
     this.auth.logout();
+    this.router.navigate(['/login']);
   }
 
   goToLogin() {

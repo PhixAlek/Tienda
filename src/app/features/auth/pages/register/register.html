@@ -9,43 +9,144 @@
       <button (click)="select('user')">Usuario</button>
       <button (click)="select('admin')">Administrador</button>
     </div>
-  } @else if (step === 'user') {
-    <h1>Registro de Usuario</h1>
-    <form (ngSubmit)="submitUser()" #fUser="ngForm">
-      <div class="form-group">
-        <label>Nombre</label>
-        <input name="name" [(ngModel)]="name" required>
-      </div>
-      <div class="form-group">
-        <label>Correo</label>
-        <input name="email" type="email" [(ngModel)]="email" required>
-      </div>
-      <div class="form-group">
-        <label>Contraseña</label>
-        <input name="password" type="password" [(ngModel)]="password" required>
-      </div>
-      <button type="submit" [disabled]="fUser.invalid">Crear cuenta</button>
-    </form>
-  } @else {
-    <h1>Registro de Empresa</h1>
-    <form (ngSubmit)="submitAdmin()" #fAdmin="ngForm">
-      <div class="form-group">
-        <label>Nombre de empresa</label>
-        <input name="companyName" [(ngModel)]="companyName" required>
-      </div>
-      <div class="form-group">
-        <label>NIT</label>
-        <input name="nit" [(ngModel)]="nit" required>
-      </div>
-      <div class="form-group">
-        <label>Correo</label>
-        <input name="email" type="email" [(ngModel)]="email" required>
-      </div>
-      <div class="form-group">
-        <label>Contraseña</label>
-        <input name="password" type="password" [(ngModel)]="password" required>
-      </div>
-      <button type="submit" [disabled]="fAdmin.invalid">Crear empresa</button>
-    </form>
+  }
+
+  @else if (step === 'user') {
+    <div class="register-card">
+      <h1>Registro de Usuario</h1>
+      <form #fUser="ngForm" (ngSubmit)="submit(fUser)">
+        <div class="form-group">
+          <label>Nombre completo</label>
+          <input
+            name="nombre"
+            [(ngModel)]="nombre"
+            required
+            minlength="2"
+            #nombreCtrl="ngModel"
+          />
+          <small class="error" *ngIf="nombreCtrl.invalid && nombreCtrl.touched">
+            {{ nombreCtrl.errors?.['required'] ? 'El nombre es obligatorio.' : '' }}
+            {{ nombreCtrl.errors?.['minlength'] ? 'Debe tener al menos 2 caracteres.' : '' }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            required
+            email
+            #emailCtrl="ngModel"
+          />
+          <small class="error" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+            {{ emailCtrl.errors?.['required'] ? 'El correo es obligatorio.' : '' }}
+            {{ emailCtrl.errors?.['email'] ? 'Formato de correo inválido.' : '' }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            required
+            minlength="8"
+            #passwordCtrl="ngModel"
+          />
+          <small class="error" *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
+            {{ passwordCtrl.errors?.['required'] ? 'La contraseña es obligatoria.' : '' }}
+            {{ passwordCtrl.errors?.['minlength'] ? 'Debe tener al menos 8 caracteres.' : '' }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Edad (opcional)</label>
+          <input name="edad" type="number" [(ngModel)]="edad" min="0" />
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono (opcional)</label>
+          <input name="telefono" [(ngModel)]="telefono" />
+        </div>
+
+        <div class="form-group">
+          <label>Dirección (opcional)</label>
+          <input name="direccion" [(ngModel)]="direccion" />
+        </div>
+
+        <button type="submit" [disabled]="fUser.invalid || loading">
+          @if (loading) {
+            <mat-spinner diameter="20"></mat-spinner> Creando cuenta...
+          } @else {
+            Crear cuenta
+          }
+        </button>
+      </form>
+    </div>
+  }
+
+  @else {
+    <div class="register-card">
+      <h1>Registro de Administrador</h1>
+      <form #fAdmin="ngForm" (ngSubmit)="submit(fAdmin)">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input
+            name="nombre"
+            [(ngModel)]="nombre"
+            required
+            minlength="2"
+            #nombreA="ngModel"
+          />
+          <small class="error" *ngIf="nombreA.invalid && nombreA.touched">
+            {{ nombreA.errors?.['required'] ? 'El nombre es obligatorio.' : '' }}
+            {{ nombreA.errors?.['minlength'] ? 'Debe tener al menos 2 caracteres.' : '' }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            required
+            email
+            #emailA="ngModel"
+          />
+          <small class="error" *ngIf="emailA.invalid && emailA.touched">
+            {{ emailA.errors?.['required'] ? 'El correo es obligatorio.' : '' }}
+            {{ emailA.errors?.['email'] ? 'Formato de correo inválido.' : '' }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            required
+            minlength="8"
+            #passwordA="ngModel"
+          />
+          <small class="error" *ngIf="passwordA.invalid && passwordA.touched">
+            {{ passwordA.errors?.['required'] ? 'La contraseña es obligatoria.' : '' }}
+            {{ passwordA.errors?.['minlength'] ? 'Debe tener al menos 8 caracteres.' : '' }}
+          </small>
+        </div>
+
+        <button type="submit" [disabled]="fAdmin.invalid || loading">
+          @if (loading) {
+            <mat-spinner diameter="20"></mat-spinner> Creando administrador...
+          } @else {
+            Crear administrador
+          }
+        </button>
+      </form>
+    </div>
   }
 </div>

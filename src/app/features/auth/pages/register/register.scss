@@ -140,3 +140,21 @@ button[type='submit'] {
     cursor: not-allowed;
   }
 }
+
+button[type='submit'] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  mat-spinner {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
