@@ -1,20 +1,24 @@
 <div class="products-container">
   <h2>Productos disponibles</h2>
 
-  @if (loading) {
+  @if (loading()) {
     <div class="loading-container">
       <mat-spinner diameter="40"></mat-spinner>
       <p>Cargando lista de productos...</p>
     </div>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
   } @else {
-    @for (item of products; track item.id) {
+    @for (item of products(); track item._id) {
       <div class="product-card">
-        <h3>{{ item.name }}</h3>
-        <p>{{ item.price | currency:'USD' }}</p>
+        <h3>{{ item.nombre }}</h3>
+        <p>Precio: {{ item.precio | currency:'USD' }}</p>
+        <p>Stock: {{ item.stock }}</p>
       </div>
     } @empty {
       <p>No hay productos para mostrar.</p>
     }
   }
 </div>
+
 

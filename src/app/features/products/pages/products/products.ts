@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ChangeDetectorRef } from '@angular/core';
-
-interface Product {
+import { ProductService } from './../../services/product';
+interface ProductView {
   id: number;
   name: string;
   price: number;
@@ -17,23 +16,15 @@ interface Product {
   styleUrls: ['./products.scss']
 })
 export class Products implements OnInit {
-  loading = true;
-  products: Product[] = [];
+ private productSvc = inject(ProductService);
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  // signals derivadas del servicio
+  products = this.productSvc.products;
+  loading  = this.productSvc.loading;
+  error    = this.productSvc.error;
 
   ngOnInit() {
-    // Simulamos carga de productos
-    setTimeout(() => {
-      this.products = [
-        { id: 1, name: 'Monitor 4K', price: 250 },
-        { id: 2, name: 'Teclado mecánico', price: 120 },
-        { id: 3, name: 'Mouse ergonómico', price: 80 }
-      ];
-      this.loading = false;
-
-      // Forzamos actualización del template
-      this.cdr.detectChanges();
-    }, 1500);
+    // simplemente dispara la carga
+    this.productSvc.getAll();
   }
 }
