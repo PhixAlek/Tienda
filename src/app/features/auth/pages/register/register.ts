@@ -1,22 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth';
+import { MatIconModule } from '@angular/material/icon';
 
 type Role = 'admin' | 'staff' | 'user';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
 export class Register {
   step: 'choose' | 'user' | 'admin' = 'choose';
+  loading = false;
 
   // user
-  nombre = '';
+  name = '';
   email = '';
   password = '';
 
@@ -25,31 +27,26 @@ export class Register {
   companyName = '';
   nit = '';
 
-  role: Role = 'user';
   loading = false;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
-  select(type: 'user' | 'admin') {
-    this.step = type;
-    this.role = type === 'admin' ? 'admin' : 'user';
+  select(type: 'user' | 'admin') { this.step = type; }
+
+  submitUser() {
+    if (!this.name || !this.email || !this.password) return alert('Completa todos los campos.');
+    this.loading = true;
+    const ok = this.auth.register({ name: this.name, email: this.email, password: this.password, type: 'user' });
+    setTimeout(() => { this.loading = false; ok ? this.router.navigate(['/home']) : alert('Error al registrar'); }, 1000);
   }
 
-  submit() {
-    if (!this.nombre || !this.email || !this.password) return alert('Completa todos los campos.');
+  submitAdmin() {
+    if (!this.companyName || !this.email || !this.password || !this.nit) return alert('Completa todos los campos de empresa.');
     this.loading = true;
-
-    this.auth.registerHttp({ nombre: this.nombre, email: this.email, password: this.password, role: this.role })
-      .subscribe({
-        next: ({ token }) => {
-          this.auth.applyToken(token);   // se queda logueado tras registrar
-          this.loading = false;
-          this.router.navigate(['/home']);
-        },
-        error: (err) => {
-          this.loading = false;
-          alert(err?.error?.error || 'Error al registrar');
-        }
-      });
+    const ok = this.auth.register({ name: this.companyName, email: this.email, password: this.password, type: 'admin' });
+    setTimeout(() => { this.loading = false; ok ? this.router.navigate(['/home']) : alert('Error al registrar'); }, 1000);
   }
 }

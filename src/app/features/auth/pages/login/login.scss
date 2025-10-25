@@ -68,3 +68,20 @@
   color: #0078ff;
   font-weight: 500;
 }
+
+.register-link {
+  text-align: center;
+  margin-top: 1rem;
+
+  a {
+    color: #005ed4; // tono azul más apagado
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #003c99; // tono más oscuro al pasar
+      text-decoration: underline;
+    }
+  }
+}
