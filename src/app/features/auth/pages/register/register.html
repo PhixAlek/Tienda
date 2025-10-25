@@ -24,10 +24,12 @@
             minlength="2"
             #nombreCtrl="ngModel"
           />
-          <small class="error" *ngIf="nombreCtrl.invalid && nombreCtrl.touched">
-            {{ nombreCtrl.errors?.['required'] ? 'El nombre es obligatorio.' : '' }}
-            {{ nombreCtrl.errors?.['minlength'] ? 'Debe tener al menos 2 caracteres.' : '' }}
-          </small>
+          @if (nombreCtrl.invalid && nombreCtrl.touched) {
+            <small class="error">
+              @if (nombreCtrl.errors?.['required']) { El nombre es obligatorio. }
+              @else if (nombreCtrl.errors?.['minlength']) { Debe tener al menos 2 caracteres. }
+            </small>
+          }
         </div>
 
         <div class="form-group">
@@ -40,10 +42,12 @@
             email
             #emailCtrl="ngModel"
           />
-          <small class="error" *ngIf="emailCtrl.invalid && emailCtrl.touched">
-            {{ emailCtrl.errors?.['required'] ? 'El correo es obligatorio.' : '' }}
-            {{ emailCtrl.errors?.['email'] ? 'Formato de correo inválido.' : '' }}
-          </small>
+          @if (emailCtrl.invalid && emailCtrl.touched) {
+            <small class="error">
+              @if (emailCtrl.errors?.['required']) { El correo es obligatorio. }
+              @else if (emailCtrl.errors?.['email']) { Formato de correo inválido. }
+            </small>
+          }
         </div>
 
         <div class="form-group">
@@ -56,10 +60,12 @@
             minlength="8"
             #passwordCtrl="ngModel"
           />
-          <small class="error" *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
-            {{ passwordCtrl.errors?.['required'] ? 'La contraseña es obligatoria.' : '' }}
-            {{ passwordCtrl.errors?.['minlength'] ? 'Debe tener al menos 8 caracteres.' : '' }}
-          </small>
+          @if (passwordCtrl.invalid && passwordCtrl.touched) {
+            <small class="error">
+              @if (passwordCtrl.errors?.['required']) { La contraseña es obligatoria. }
+              @else if (passwordCtrl.errors?.['minlength']) { Debe tener al menos 8 caracteres. }
+            </small>
+          }
         </div>
 
         <div class="form-group">
@@ -88,7 +94,7 @@
     </div>
   }
 
-  @else {
+  @else if (step === 'admin') {
     <div class="register-card">
       <h1>Registro de Administrador</h1>
       <form #fAdmin="ngForm" (ngSubmit)="submit(fAdmin)">
@@ -101,10 +107,12 @@
             minlength="2"
             #nombreA="ngModel"
           />
-          <small class="error" *ngIf="nombreA.invalid && nombreA.touched">
-            {{ nombreA.errors?.['required'] ? 'El nombre es obligatorio.' : '' }}
-            {{ nombreA.errors?.['minlength'] ? 'Debe tener al menos 2 caracteres.' : '' }}
-          </small>
+          @if (nombreA.invalid && nombreA.touched) {
+            <small class="error">
+              @if (nombreA.errors?.['required']) { El nombre es obligatorio. }
+              @else if (nombreA.errors?.['minlength']) { Debe tener al menos 2 caracteres. }
+            </small>
+          }
         </div>
 
         <div class="form-group">
@@ -117,10 +125,12 @@
             email
             #emailA="ngModel"
           />
-          <small class="error" *ngIf="emailA.invalid && emailA.touched">
-            {{ emailA.errors?.['required'] ? 'El correo es obligatorio.' : '' }}
-            {{ emailA.errors?.['email'] ? 'Formato de correo inválido.' : '' }}
-          </small>
+          @if (emailA.invalid && emailA.touched) {
+            <small class="error">
+              @if (emailA.errors?.['required']) { El correo es obligatorio. }
+              @else if (emailA.errors?.['email']) { Formato de correo inválido. }
+            </small>
+          }
         </div>
 
         <div class="form-group">
@@ -133,10 +143,12 @@
             minlength="8"
             #passwordA="ngModel"
           />
-          <small class="error" *ngIf="passwordA.invalid && passwordA.touched">
-            {{ passwordA.errors?.['required'] ? 'La contraseña es obligatoria.' : '' }}
-            {{ passwordA.errors?.['minlength'] ? 'Debe tener al menos 8 caracteres.' : '' }}
-          </small>
+          @if (passwordA.invalid && passwordA.touched) {
+            <small class="error">
+              @if (passwordA.errors?.['required']) { La contraseña es obligatoria. }
+              @else if (passwordA.errors?.['minlength']) { Debe tener al menos 8 caracteres. }
+            </small>
+          }
         </div>
 
         <button type="submit" [disabled]="fAdmin.invalid || loading">
